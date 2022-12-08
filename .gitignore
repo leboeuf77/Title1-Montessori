@@ -1,3 +1,9 @@
+# Mac
+.DS_Store
+
+# git ignore
+.gitignore
+
 # History files
 .Rhistory
 .Rapp.history
