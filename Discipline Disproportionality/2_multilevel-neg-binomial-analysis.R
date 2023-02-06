@@ -11,6 +11,9 @@ invisible(lapply(list('dplyr', 'tidyr', 'stringi', 'ggeffects',
                       'ggplot2', 'glmmTMB', 'DHARMa'),
                  function(pkg) library(pkg, character.only = TRUE)))
 
+# NOTE: The analysis for this paper used version 1.4.1 of the glmmTMB package 
+# and version 0.4.6 of the DHARMa package. 
+
 # Initialize function for calculating bias-corrected CIs
 # See Bootstrap Methods (Chernick, 2008) Ch. 3 for info on bias-corrected confidence intervals
 # Hat tip to the infer R package (part of tidymodels; made available under an MIT License) 
