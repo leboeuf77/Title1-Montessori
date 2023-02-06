@@ -311,14 +311,6 @@ mlm_pred_oss$group <- mlm_pred_oss$x
 mlm_pred_oss <- cbind(mlm_pred_oss, t(pred_cis_oss))
 colnames(mlm_pred_oss)[(ncol(mlm_pred_oss)-1):ncol(mlm_pred_oss)] <- c('lower', 'upper')
 
-ossplot <- ggplot(mlm_pred_oss, aes(x = mont, y = predicted, color = group)) +
-  geom_point(stat = 'identity', position = position_dodge(width = .5)) +
-  geom_errorbar(aes(ymin = lower, ymax = upper), position = position_dodge(width = .5), width = .25) +
-  labs(x = "School type", y = "Model-estimated OSS counts per 100 students") +
-  scale_color_manual('Racial group', labels = c('White', 'Black', 'Hispanic'),
-                     values = c('#3d405b', '#e07a5f', '#81b29a')) + ylim(0, 5.5) + theme_bw() + 
-  theme(text = element_text(size = 15))
-
 ## ISS ---------- ---------- 
 # 95% bias-corrected CIs for predictions
 pred_df_iss <- apply(pred_df_iss, 2, as.numeric)
@@ -338,14 +330,21 @@ mlm_pred_iss$group <- mlm_pred_iss$x
 mlm_pred_iss <- cbind(mlm_pred_iss, t(pred_cis_iss))
 colnames(mlm_pred_iss)[(ncol(mlm_pred_iss)-1):ncol(mlm_pred_iss)] <- c('lower', 'upper')
 
-issplot <- ggplot(mlm_pred_iss, aes(x = mont, y = predicted, color = group)) +
-  geom_point(stat = 'identity', position = position_dodge(width = .5)) +
-  geom_errorbar(aes(ymin = lower, ymax = upper), position = position_dodge(width = .5), width = .25) +
-  labs(x = "School type", y = "Model-estimated ISS counts per 100 students") +
+## Combined Plot
+# Adding column to above df's for suspension type 
+mlm_pred_oss$sus <- "OSS"
+mlm_pred_iss$sus <- "ISS"
+# binding them together 
+combined_pred <- bind_rows(mlm_pred_oss, mlm_pred_iss)
+
+# creating plot 
+combinedplot <- ggplot(combined_pred, aes(x = mont, y = predicted, color = group)) +
+  geom_point(stat = 'identity', position = position_dodge(width = .5), size = 2.5) +
+  geom_errorbar(aes(ymin = lower, ymax = upper), position = position_dodge(width = .5), width = .40) +
+  labs(x = "School type", y = "Model-estimated ISS and OSS counts per 100 students") +
   scale_color_manual('Racial group', labels = c('White', 'Black', 'Hispanic'),
                      values = c('#3d405b', '#e07a5f', '#81b29a')) + ylim(0, 5.5) + theme_bw() + 
-  theme(text = element_text(size = 15)) 
+  theme(text = element_text(size = 15)) + facet_grid(~sus)
 
+# ggsave(filename = 'combinedplot.png', combinedplot)
 
-# ggsave(filename = 'oss-NBmlm.png', ossplot)
-# ggsave(filename = 'iss-NBmlm.png', issplot)
